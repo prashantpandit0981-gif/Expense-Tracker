@@ -1,39 +1,44 @@
 import { useState } from "react";
 
-export default function Login({ setCurrentView }) {
+export default function Signup({ setCurrentView }) {
   const [form, setForm] = useState({
+    name: "",
     email: "",
     password: "",
   });
-
-  const savedUser = JSON.parse(localStorage.getItem("user"));
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleLogin = (e) => {
+  const handleSignup = (e) => {
     e.preventDefault();
 
-    if (!savedUser) {
-      alert("No user found! Please sign up first.");
-      return;
-    }
+    // Save user to localStorage
+    localStorage.setItem("user", JSON.stringify(form));
 
-    if (form.email === savedUser.email && form.password === savedUser.password) {
-      alert("Login successful!");
-      setCurrentView("dashboard");
-    } else {
-      alert("Incorrect email or password.");
-    }
+    alert("Signup successful!");
+    setCurrentView("login");
   };
 
   return (
     <div className="d-flex justify-content-center text-light">
       <div className="card p-4 bg-dark text-light" style={{ width: "380px" }}>
-        <h2 className="mb-3">Login</h2>
+        <h2 className="mb-3">Create Account</h2>
 
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleSignup}>
+          <div className="mb-3">
+            <label className="form-label">Full Name</label>
+            <input
+              type="text"
+              name="name"
+              className="form-control"
+              value={form.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
           <div className="mb-3">
             <label className="form-label">Email</label>
             <input
@@ -58,16 +63,16 @@ export default function Login({ setCurrentView }) {
             />
           </div>
 
-          <button className="btn btn-success w-100">Login</button>
+          <button className="btn btn-primary w-100">Sign Up</button>
 
           <p className="mt-3 text-center">
-            Don't have an account?{" "}
+            Already have an account?{" "}
             <span
               role="button"
               className="text-info"
-              onClick={() => setCurrentView("signup")}
+              onClick={() => setCurrentView("login")}
             >
-              Sign Up
+              Login
             </span>
           </p>
         </form>

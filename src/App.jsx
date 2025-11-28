@@ -6,9 +6,19 @@ import AddExpense from "./components/Expenses/AddExpense";
 import AddIncome from "./components/Income/AddIncome";
 import { saveToStorage, loadFromStorage, STORAGE_KEYS } from "./utils/storage";
 import "./App.css";
+// added supabase in auth 
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient("https://tayvyzvbyigtxsjkvclz.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRheXZ5enZieWlndHhzamt2Y2x6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxMTE3NTcsImV4cCI6MjA3NzY4Nzc1N30.Kvs7bcdN7V5uPWxeBVlrDP-EIwUjZQzp4ICFIzPnBOQ"
+);
+
+// 🔥 Added Auth pages
+import Login from "./components/Auth/Login";
+import Signup from "./components/Auth/Signup";
 
 function App() {
-  const [currentView, setCurrentView] = useState("dashboard");
+  // Start at login page
+  const [currentView, setCurrentView] = useState("login");
 
   // Load data from localStorage or use defaults
   const [currency, setCurrency] = useState(() =>
@@ -143,7 +153,9 @@ function App() {
         setCurrency={setCurrency}
         currencies={currencies}
       />
+
       <div className="container mt-4 pb-5">
+        {/* 📌 Dashboard */}
         {currentView === "dashboard" && (
           <Dashboard
             expenses={expenses}
@@ -155,6 +167,8 @@ function App() {
             setBudgets={setBudgets}
           />
         )}
+
+        {/* 📌 Add Expense */}
         {currentView === "add" && (
           <>
             <h2 className="text-light mb-4">Add Expense</h2>
@@ -165,6 +179,8 @@ function App() {
             />
           </>
         )}
+
+        {/* 📌 Add Income */}
         {currentView === "income" && (
           <>
             <h2 className="text-light mb-4">Add Income</h2>
@@ -175,6 +191,8 @@ function App() {
             />
           </>
         )}
+
+        {/* 📌 Settings */}
         {currentView === "settings" && (
           <>
             <h2 className="text-light mb-4">Settings</h2>
@@ -186,9 +204,20 @@ function App() {
             />
           </>
         )}
+
+        {/* 🔥 NEW — Login Page */}
+        {currentView === "login" && (
+          <Login setCurrentView={setCurrentView} />
+        )}
+
+        {/* 🔥 NEW — Signup Page */}
+        {currentView === "signup" && (
+          <Signup setCurrentView={setCurrentView} />
+        )}
       </div>
     </div>
   );
+  
 }
 
 export default App;
