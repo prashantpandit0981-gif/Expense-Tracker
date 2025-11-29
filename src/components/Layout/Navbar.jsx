@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient("https://tayvyzvbyigtxsjkvclz.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRheXZ5enZieWlndHhzamt2Y2x6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxMTE3NTcsImV4cCI6MjA3NzY4Nzc1N30.Kvs7bcdN7V5uPWxeBVlrDP-EIwUjZQzp4ICFIzPnBOQ"
+// SUPABASE CLIENT
+const supabase = createClient(
+  "https://tayvyzvbyigtxsjkvclz.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRheXZ5enZieWlndHhzamt2Y2x6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxMTE3NTcsImV4cCI6MjA3NzY4Nzc1N30.Kvs7bcdN7V5uPWxeBVlrDP-EIwUjZQzp4ICFIzPnBOQ"
 );
-
 
 function Navbar({
   currentView,
@@ -16,7 +18,13 @@ function Navbar({
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Close dropdown when clicking outside
+  // 🔹 LOGOUT FUNCTION
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.reload(); // go back to login page
+  };
+
+  // 🔹 Close dropdown on outside click
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -27,7 +35,7 @@ function Navbar({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Close mobile menu when clicking a link
+  // 🔹 Close mobile menu & navigate
   const handleNavClick = (view) => {
     setCurrentView(view);
     setShowMobileMenu(false);
@@ -35,8 +43,10 @@ function Navbar({
 
   return (
     <>
+      {/* TOP NAVBAR */}
       <nav className="navbar navbar-dark bg-modern-dark py-3">
         <div className="container">
+          {/* LOGO */}
           <a
             className="navbar-brand fw-bold d-flex align-items-center"
             href="#"
@@ -45,15 +55,14 @@ function Navbar({
               handleNavClick("dashboard");
             }}
           >
-            <span className="me-2" style={{ fontSize: "1.5rem" }}>
-              💰
-            </span>
+            <span className="me-2" style={{ fontSize: "1.5rem" }}>💰</span>
             <span style={{ color: "#10b981" }}>Expense</span>
             <span className="ms-1 text-light">Tracker</span>
           </a>
 
-          {/* Desktop Menu */}
+          {/* DESKTOP MENU */}
           <div className="d-none d-lg-flex align-items-center">
+            {/* Dashboard */}
             <a
               className={`nav-link px-3 ${
                 currentView === "dashboard" ? "text-primary" : "text-light"
@@ -66,6 +75,8 @@ function Navbar({
             >
               <i className="bi bi-speedometer2 me-1"></i> Dashboard
             </a>
+
+            {/* Add Expense */}
             <a
               className={`nav-link px-3 ${
                 currentView === "add" ? "text-primary" : "text-light"
@@ -78,6 +89,8 @@ function Navbar({
             >
               <i className="bi bi-plus-circle me-1"></i> Add Expense
             </a>
+
+            {/* Add Income */}
             <a
               className={`nav-link px-3 ${
                 currentView === "income" ? "text-primary" : "text-light"
@@ -90,6 +103,8 @@ function Navbar({
             >
               <i className="bi bi-arrow-down-circle me-1"></i> Add Income
             </a>
+
+            {/* Settings */}
             <a
               className={`nav-link px-3 ${
                 currentView === "settings" ? "text-primary" : "text-light"
@@ -102,6 +117,8 @@ function Navbar({
             >
               <i className="bi bi-gear me-1"></i> Settings
             </a>
+
+            {/* Currency Dropdown */}
             <div className="position-relative ms-2" ref={dropdownRef}>
               <button
                 className="btn btn-sm btn-outline-secondary"
@@ -109,6 +126,7 @@ function Navbar({
               >
                 {currency} <i className="bi bi-chevron-down ms-1"></i>
               </button>
+
               {showCurrencyDropdown && (
                 <div
                   className="position-absolute end-0 mt-2 py-2 rounded shadow"
@@ -122,12 +140,11 @@ function Navbar({
                   {Object.entries(currencies).map(([code, curr]) => (
                     <button
                       key={code}
-                      className="d-block w-100 text-start px-3 py-2 border-0 text-light currency-option"
+                      className="d-block w-100 text-start px-3 py-2 border-0 text-light"
                       style={{
                         cursor: "pointer",
                         backgroundColor:
                           currency === code ? "#10b981" : "transparent",
-                        transition: "background-color 0.2s",
                       }}
                       onClick={() => {
                         setCurrency(code);
@@ -140,12 +157,14 @@ function Navbar({
                 </div>
               )}
             </div>
-            <button className="btn btn-modern ms-2">
+
+            {/* 🔥 LOGOUT BUTTON */}
+            <button className="btn btn-modern ms-2" onClick={handleLogout}>
               <i className="bi bi-box-arrow-right me-1"></i> Logout
             </button>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* MOBILE MENU BUTTON */}
           <button
             className="btn d-lg-none"
             onClick={() => setShowMobileMenu(!showMobileMenu)}
@@ -156,7 +175,7 @@ function Navbar({
         </div>
       </nav>
 
-      {/* Mobile Sidebar */}
+      {/* MOBILE SIDEBAR */}
       <div
         className={`mobile-sidebar ${showMobileMenu ? "show" : ""}`}
         style={{
@@ -183,6 +202,7 @@ function Navbar({
             </button>
           </div>
 
+          {/* Sidebar Links */}
           <div className="nav flex-column">
             <a
               className={`nav-link mb-2 rounded px-3 py-3 ${
@@ -195,10 +215,10 @@ function Navbar({
                 e.preventDefault();
                 handleNavClick("dashboard");
               }}
-              style={{ transition: "all 0.3s" }}
             >
               <i className="bi bi-speedometer2 me-2"></i> Dashboard
             </a>
+
             <a
               className={`nav-link mb-2 rounded px-3 py-3 ${
                 currentView === "add" ? "bg-primary text-white" : "text-light"
@@ -208,10 +228,10 @@ function Navbar({
                 e.preventDefault();
                 handleNavClick("add");
               }}
-              style={{ transition: "all 0.3s" }}
             >
               <i className="bi bi-plus-circle me-2"></i> Add Expense
             </a>
+
             <a
               className={`nav-link mb-2 rounded px-3 py-3 ${
                 currentView === "income"
@@ -223,10 +243,10 @@ function Navbar({
                 e.preventDefault();
                 handleNavClick("income");
               }}
-              style={{ transition: "all 0.3s" }}
             >
               <i className="bi bi-arrow-down-circle me-2"></i> Add Income
             </a>
+
             <a
               className={`nav-link mb-2 rounded px-3 py-3 ${
                 currentView === "settings"
@@ -238,11 +258,11 @@ function Navbar({
                 e.preventDefault();
                 handleNavClick("settings");
               }}
-              style={{ transition: "all 0.3s" }}
             >
               <i className="bi bi-gear me-2"></i> Settings
             </a>
 
+            {/* Currency */}
             <div className="mt-3 mb-3">
               <label className="text-secondary small mb-2">Currency</label>
               <select
@@ -258,17 +278,15 @@ function Navbar({
               </select>
             </div>
 
-            <button
-              className="btn btn-modern w-100 mt-4"
-              onClick={() => setShowMobileMenu(false)}
-            >
+            {/* 🔥 MOBILE LOGOUT */}
+            <button className="btn btn-modern w-100 mt-4" onClick={handleLogout}>
               <i className="bi bi-box-arrow-right me-2"></i> Logout
             </button>
           </div>
         </div>
       </div>
 
-      {/* Overlay */}
+      {/* MOBILE OVERLAY */}
       {showMobileMenu && (
         <div
           className="mobile-overlay"
